@@ -157,12 +157,12 @@ train<-sample(n,3/4*n)
 test<-amphib_reduced[-train,]
 logreg_val<-glm(`Green frogs`~TR+SUR3+RR+SR+VR,data=amphib_reduced,family = binomial,subset = train)
 glm.pred <- ifelse(predict(logreg_val,amphib_reduced,type='response')[-train]>0.3,'Present','Not Present')
-acc1 <- round(mean(glm.pred==amphib_reduced$`Green frogs`[-train]),2)
+acc1 <- round(mean(glm.pred==amphib_reduced$`Green frogs`[-train])*100,2)
 t <- table(glm.pred,amphib_reduced$`Green frogs`[-train])
 knitr::kable(t)
 ```
   
-The model predicted the presence of frogs `r acc1` of the time correctly. The sensitivity is 76% and the specificity is 56%.  
+The model predicted the presence of frogs `r acc1`% of the time correctly. The sensitivity is 76% and the specificity is 56%.  
   
   We will now try KNN, but we must keep in mind the Curse of Dimensionality, which will cause the fit to have a higher error rate as we add more dimensions. With this in mind, I will use the variable that had the highest significance in the logistic regression model: TR.  
 ```{r,echo=FALSE}
@@ -172,9 +172,9 @@ train.P=amphib_reduced$`Green frogs`[train]
 knn1<-knn(train.X,test.X,train.P,k=1)
 t <- table(knn1,test$`Green frogs`)
 knitr::kable(t)
-acc <- round(mean(knn1==test$`Green frogs`),2)
+acc <- round(mean(knn1==test$`Green frogs`)*100,2)
 ```
-  We got a `r acc` accuracy rate, which is a little bit higher than the logistic regression.  
+  We got a `r acc`% accuracy rate, which is a little bit higher than the logistic regression.  
   
 # Using Cross Validation  
   

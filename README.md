@@ -72,7 +72,7 @@ often each type of frog shows up across all the sites. Brown frogs are
 the most common, showing up in 78% of the sites, and Great crested newt
 shows up the least, in 11% of sites.
 
-![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 Before attempting to fit a linear model, it is important to explore
 correlations between the predictors and responses. Plotted below is the
@@ -81,12 +81,12 @@ absolute value of 3). We should keep these values in mind as we begin to
 fit our analysis, as high predictor correlation can cause
 multicollinearity.
 
-![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 We can also use correlations to get an idea of which species type has
 some of the strongest correlations with the predictors.
 
-![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 Green frogs appear to have more and stronger correlations with the
 variables, so I will focus my model on them for the rest of the
@@ -210,7 +210,7 @@ increase SUR3. This could indicate a linear relationship between these
 predictors and the frog presence. I will also evaluate the KNN model
 since the TR variable does not have an inherent ordering.
 
-![](README_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 Now I will split the data to compare Logistic Regression and KNN. When
 using logistic regression, I will predict the site is a good habitat if
@@ -223,7 +223,7 @@ classifier.
 | Not Present |           5 |       3 |
 | Present     |          13 |      26 |
 
-The model predicted the presence of frogs 0.66 of the time correctly.
+The model predicted the presence of frogs 65.96% of the time correctly.
 The sensitivity is 76% and the specificity is 56%.
 
 We will now try KNN, but we must keep in mind the Curse of
@@ -236,7 +236,7 @@ had the highest significance in the logistic regression model: TR.
 | Not Present |           9 |       5 |
 | Present     |           9 |      24 |
 
-We got a 0.7 accuracy rate, which is a little bit higher than the
+We got a 70.21% accuracy rate, which is a little bit higher than the
 logistic regression.
 
 # Using Cross Validation
@@ -247,7 +247,7 @@ plot of the k vs the accuracy rate, which shows us that the optimal
 number of neighbors is 7. We achieved the highest accuracy rate of 72.9%
 with k=7.
 
-![](README_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
     ## k-Nearest Neighbors 
     ## 
@@ -408,7 +408,7 @@ train<-sample(n,3/4*n)
 test<-amphib_reduced[-train,]
 logreg_val<-glm(`Green frogs`~TR+SUR3+RR+SR+VR,data=amphib_reduced,family = binomial,subset = train)
 glm.pred <- ifelse(predict(logreg_val,amphib_reduced,type='response')[-train]>0.3,'Present','Not Present')
-acc1 <- round(mean(glm.pred==amphib_reduced$`Green frogs`[-train]),2)
+acc1 <- round(mean(glm.pred==amphib_reduced$`Green frogs`[-train])*100,2)
 t <- table(glm.pred,amphib_reduced$`Green frogs`[-train])
 knitr::kable(t)
 train.X=amphib_reduced[train,'TR']
@@ -417,7 +417,7 @@ train.P=amphib_reduced$`Green frogs`[train]
 knn1<-knn(train.X,test.X,train.P,k=1)
 t <- table(knn1,test$`Green frogs`)
 knitr::kable(t)
-acc <- round(mean(knn1==test$`Green frogs`),2)
+acc <- round(mean(knn1==test$`Green frogs`)*100,2)
 train.control <- trainControl(method  = "cv", number = 10)
 
 fit <- train(`Green frogs`~ TR,
