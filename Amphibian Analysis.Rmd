@@ -174,7 +174,7 @@ t <- table(knn1,test$`Green frogs`)
 knitr::kable(t)
 acc <- round(mean(knn1==test$`Green frogs`)*100,2)
 ```
-  We got a `r acc`% accuracy rate, which is a little bit higher than the logistic regression.  
+  We got a `r acc`% accuracy rate, which is a bit higher than the logistic regression.  
   
 # Using Cross Validation  
   

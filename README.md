@@ -236,8 +236,8 @@ had the highest significance in the logistic regression model: TR.
 | Not Present |           9 |       5 |
 | Present     |           9 |      24 |
 
-We got a 70.21% accuracy rate, which is a little bit higher than the
-logistic regression.
+We got a 70.21% accuracy rate, which is a bit higher than the logistic
+regression.
 
 # Using Cross Validation
 
