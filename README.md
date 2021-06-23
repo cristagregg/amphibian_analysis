@@ -1,43 +1,41 @@
-Using logistic regression and KNN to predict the presence of Green Frogs
-in Reservoirs
+Using Logistic Regression and KNN to Predict Green Frogs’ Presence in
+Reservoirs
 ================
 Crista Gregg
 3/7/2021
 
--   [Amphibian Analysis](#amphibian-analysis)
-    -   [Part 1) Exploratory Data
-        Analysis](#part-1-exploratory-data-analysis)
-    -   [Part 2) Fitting a Logistic Regression
-        Model](#part-2-fitting-a-logistic-regression-model)
-    -   [Part 3) Creating a Classifier](#part-3-creating-a-classifier)
-    -   [Part 4) Using Cross Validation](#part-4-using-cross-validation)
-    -   [Conclusion](#conclusion)
-    -   [Appendix: R Code](#appendix-r-code)
+-   [Introduction](#introduction)
+-   [Exploratory Data Analysis](#exploratory-data-analysis)
+-   [Fitting a Logistic Regression
+    Model](#fitting-a-logistic-regression-model)
+-   [Creating a Classifier](#creating-a-classifier)
+-   [Using Cross Validation](#using-cross-validation)
+-   [Conclusion](#conclusion)
+-   [Appendix: R Code](#appendix-r-code)
 
-# Amphibian Analysis
+# Introduction
 
-The goal of this analysis is to predict the presense of amphibian
+The goal of this analysis is to predict the presence of amphibian
 species near water reservoirs based on various features. More
-information about the dataset is provided
+information about the dataset used is provided
 [here]('http://archive.ics.uci.edu/ml/datasets/Amphibians'). First, I
-will explore the data and try to see if there are any issues with the
-data or obvious correlations. I will then fit a logistic regression
-model. Finally I will build a predictive model to determine if site is
-like to have a frog species or not, and use cross validation to minimize
-the error rate.
+will explore the data and look for data issues and obvious correlations.
+I will then fit a logistic regression model. Finally, I will build a
+predictive model to determine if site is like to have a frog species or
+not, and minimize the error rate with cross validation.
 
-### Part 1) Exploratory Data Analysis
+# Exploratory Data Analysis
 
 Before attempting to fit a model, I will briefly explain the variables,
-check to ensure the data makes sense given the information given to us
-about the variables, check if there are high correlations between the
-predictor variables, and then determine which type of frog may be the
-most interesting to study.
+check to ensure the data makes sense given the information we have about
+the variables, check if there are high correlations between the
+predictor variables, and then determine which frog type may be the most
+interesting to study.
 
 In this dataset, we have several types of variables indicating the
-presence of certain types of frogs and newts, and status of the
+presence of certain types of frogs and newts, as well as status of the
 reservoirs. For the categorical predictor variables, each number
-represents the different level of a feature of the site. These are in an
+represents the different level of a site’s feature. These are in an
 intuitive order for this dataset. For example, VR is 0 for no
 vegetation, 1 for light vegetation, up to 5 for completely overgrown
 vegetation. However, the categorical variables don’t necessarily
@@ -55,10 +53,10 @@ are the variables present in the dataset.
     ## [21] "Tree frog"          "Common newt"        "Great crested newt"
 
 To ensure that the variables make sense, I reviewed the unique levels of
-the predictor variables in the dataset as compared to the levels of
-described in the metadata. A concern to be noted is that FR has 5 levels
-in the dataset, but the notes tell us there are only 3. To review this
-further I will check how often these values show up:
+the predictor variables as compared to the levels of described in the
+metadata. A concern to be noted is that FR has 5 levels in the dataset,
+but the notes tell us there are only 3. To review this further I will
+check how often these values show up:
 
     ## Frequency of Levels
     ##   0   1   2   3   4 
@@ -69,26 +67,26 @@ was a mistyped number, so I will proceed with the analysis with all 5
 levels as if they were meant to be included, since I have no further
 information on the variable.
 
-Looking at the means of the indicator variables for the species shows us
-how often each type of frog shows up across all the sites. Brown frogs
-are the most common, showing up in 78% of the sites, and Great crested
-newt shows up the least, in 11% of sites.
+Looking at the means of the species’ indicator variables shows us how
+often each type of frog shows up across all the sites. Brown frogs are
+the most common, showing up in 78% of the sites, and Great crested newt
+shows up the least, in 11% of sites.
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 Before attempting to fit a linear model, it is important to explore
 correlations between the predictors and responses. Plotted below is the
 predictor pairs that have a moderate correlation (greater than the
 absolute value of 3). We should keep these values in mind as we begin to
-fit our analysis, as high correlation between predictors can cause
+fit our analysis, as high predictor correlation can cause
 multicollinearity.
 
-![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 We can also use correlations to get an idea of which species type has
 some of the strongest correlations with the predictors.
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 Green frogs appear to have more and stronger correlations with the
 variables, so I will focus my model on them for the rest of the
@@ -97,7 +95,7 @@ We should note before proceeding that all pairs of these variables are
 moderately to strongly correlated, so these may not all be present in
 our final model.
 
-### Part 2) Fitting a Logistic Regression Model
+# Fitting a Logistic Regression Model
 
 Before fitting a logistic regression model, I will reduce the original
 dataset to just the relevant variables and change the unordered
@@ -196,7 +194,7 @@ SUR3, RR, SR, and VR- that are significant at the 0.10 level.
     ## SR           1.289239e-04 6.517843e-05  1.978014515 0.0479270692
     ## VR          -3.086877e-01 1.767507e-01 -1.746458007 0.0807313980
 
-### Part 3) Creating a Classifier
+# Creating a Classifier
 
 We now want to use the best model to create a classifier to predict
 whether a site is likely to host the green frogs. We will evaluate
@@ -205,29 +203,27 @@ logistic regression or LDA would give a good fit, because it is likely
 to be a linear fit. If a frog dislikes to avoid a feature, chances are
 that if there is more of that feature, the frog will avoid it more, and
 if there is less, it will avoid it less. As an example, below is a chart
-of the presence of frogs at the levels of our two strongest predictors,
-TR and SUR3. We can see that as we increase the level on TR, the number
-of sites that host green frogs decreases steadily. The same is true as
-we increase SUR3. This could indicate a linear relationship between
-these predictors and the frog presence. I will also evaluate the KNN
-model since the TR variable does not have an inherent ordering.
+of the frogs’ presence at the levels of our two strongest predictors, TR
+and SUR3. We can see that as we increase the TR, the number of sites
+that host green frogs decreases steadily. The same is true as we
+increase SUR3. This could indicate a linear relationship between these
+predictors and the frog presence. I will also evaluate the KNN model
+since the TR variable does not have an inherent ordering.
 
-![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
 
-Now I will split our data to compare Logistic Regression and KNN. When
+Now I will split the data to compare Logistic Regression and KNN. When
 using logistic regression, I will predict the site is a good habitat if
-the probability of the green being present is greater than 0.5. I will
-now fit our model in the dataset. Because TR7 only shows up once in the
-dataset, it will be removed from the classifier.
+the probability of the green being present is greater than 0.5. Because
+TR7 only shows up once in the dataset, it will be removed from the
+classifier.
 
-    ## [1] 0.6595745
+|             | Not Present | Present |
+|:------------|------------:|--------:|
+| Not Present |           5 |       3 |
+| Present     |          13 |      26 |
 
-    ##              
-    ## glm.pred      Not Present Present
-    ##   Not Present           5       3
-    ##   Present              13      26
-
-The model predicted the presence of frogs 68.1% of the time correctly.
+The model predicted the presence of frogs 0.66 of the time correctly.
 The sensitivity is 76% and the specificity is 56%.
 
 We will now try KNN, but we must keep in mind the Curse of
@@ -235,25 +231,23 @@ Dimensionality, which will cause the fit to have a higher error rate as
 we add more dimensions. With this in mind, I will use the variable that
 had the highest significance in the logistic regression model: TR.
 
-    ##              
-    ## knn1          Not Present Present
-    ##   Not Present           9       5
-    ##   Present               9      24
+|             | Not Present | Present |
+|:------------|------------:|--------:|
+| Not Present |           9 |       5 |
+| Present     |           9 |      24 |
 
-    ## [1] 0.7021277
-
-We got a 70.2% accuracy rate, which is a little bit higher than the
+We got a 0.7 accuracy rate, which is a little bit higher than the
 logistic regression.
 
-### Part 4) Using Cross Validation
+# Using Cross Validation
 
 To attempt to increase our accuracy with the KNN model, I will use
 10-fold Cross Validation to determine the best value of k. Below is a
 plot of the k vs the accuracy rate, which shows us that the optimal
 number of neighbors is 7. We achieved the highest accuracy rate of 72.9%
-with k=7 using cross validation.
+with k=7.
 
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-34-1.png)<!-- -->
 
     ## k-Nearest Neighbors 
     ## 
@@ -310,7 +304,7 @@ and compare results.
 
 We received an accuracy of 73.9%, marginally better than the KNN model.
 
-### Conclusion
+# Conclusion
 
 Overall, as expected due to the types of data we were looking at, the
 best accuracy was achieved using the logistic regression model with 5
@@ -324,9 +318,13 @@ However, KNN also worked almost as well, using one predictor, TR. This
 predictor doesn’t appear to have any inherent ordering, but is highly
 significant in predicting whether the frog would be present in the site.
 Therefore, a more flexible model also worked very well in predicting the
-frog’s presence.
+frogs’ presence. In further analysis, we could improve this model by
+incorporating a dimension reduction technique such as Principle
+Components Analysis, which would keep the information from more
+predictors without negatively impacting our model due to a high
+dimensionality.
 
-### Appendix: R Code
+# Appendix: R Code
 
 ``` r
 library(tidyverse)
@@ -410,14 +408,16 @@ train<-sample(n,3/4*n)
 test<-amphib_reduced[-train,]
 logreg_val<-glm(`Green frogs`~TR+SUR3+RR+SR+VR,data=amphib_reduced,family = binomial,subset = train)
 glm.pred <- ifelse(predict(logreg_val,amphib_reduced,type='response')[-train]>0.3,'Present','Not Present')
-mean(glm.pred==amphib_reduced$`Green frogs`[-train])
-table(glm.pred,amphib_reduced$`Green frogs`[-train])
+acc1 <- round(mean(glm.pred==amphib_reduced$`Green frogs`[-train]),2)
+t <- table(glm.pred,amphib_reduced$`Green frogs`[-train])
+knitr::kable(t)
 train.X=amphib_reduced[train,'TR']
 test.X=amphib_reduced[-train,'TR']
 train.P=amphib_reduced$`Green frogs`[train]
 knn1<-knn(train.X,test.X,train.P,k=1)
-table(knn1,test$`Green frogs`)
-mean(knn1==test$`Green frogs`)
+t <- table(knn1,test$`Green frogs`)
+knitr::kable(t)
+acc <- round(mean(knn1==test$`Green frogs`),2)
 train.control <- trainControl(method  = "cv", number = 10)
 
 fit <- train(`Green frogs`~ TR,
